@@ -42,12 +42,8 @@ M.setup = function(config)
     end
   end
 
-  if config.insert_color == nil then
-    config.insert_color = "#e21855"
-  end
-  if config.normal_color == nil then
-    config.normal_color = "#2cba1f"
-  end
+  config.insert_color = config.insert_color or "#e21855"
+  config.normal_color = config.normal_color or "#2cba1f"
 
   local window_id_env_var = os.getenv('WINDOWID')
   if window_id_env_var == '' or window_id_env_var == nil then
