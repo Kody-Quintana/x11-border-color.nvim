@@ -16,66 +16,20 @@ M.setup = function(config)
     print(prefix .. message)
   end
 
-
-  if config.disable_if_env_has == nil then
-    config.disable_if_env_has = {
-      'TMUX'
-    }
+  if os.getenv('TMUX') ~= nil then
+    return nil
   end
-  for _, disabling_env_var in ipairs(config.disable_if_env_has) do
-    for env_var, _ in pairs(vim.fn.environ()) do
-      if disabling_env_var == env_var then
+
+  for _, arg in ipairs(vim.v.argv) do
+    for _, disabling_arg in ipairs({
+      '--remote-ui',
+      '--listen',
+    }) do
+      if arg == disabling_arg then
         return nil
       end
     end
   end
-
-
-  if config.disable_if_env_matches == nil then
-    config.disable_if_env_matches = {}
-  end
-  for disabling_env_var_name, disabling_env_var_value in pairs(config.disable_if_env_matches) do
-    for env_var_name, env_var_value in pairs(vim.fn.environ()) do
-      if disabling_env_var_name == env_var_name and disabling_env_var_value == env_var_value then
-          return nil
-      end
-    end
-  end
-
-
-  -- These can be strings, or a list of strings that must all match in a row
-  if config.disable_if_argv_has == nil then
-    config.disable_if_argv_has = {
-      '--remote-ui',
-    }
-  end
-  for arg_index, arg in ipairs(vim.v.argv) do
-    for _, disabling_arg in ipairs(config.disable_if_argv_has) do
-
-      if type(disabling_arg) == "table" then
-        -- Check if disabling_arg is a sub array of the rest of the args
-        local num_matched = 0
-        for disabling_arg_index, disabling_arg_element in ipairs(disabling_arg) do
-          local arg_element = vim.v.argv[arg_index + disabling_arg_index - 1]
-          if disabling_arg_element == arg_element then
-            num_matched = num_matched + 1
-          else
-            break
-          end
-          if num_matched == #disabling_arg then
-            return nil
-          end
-        end
-
-      else
-        if arg == disabling_arg then
-          return nil
-        end
-      end
-
-    end
-  end
-
 
   local loaded_libxcb, xcb = pcall(ffi.load, 'xcb')
   if not loaded_libxcb then
