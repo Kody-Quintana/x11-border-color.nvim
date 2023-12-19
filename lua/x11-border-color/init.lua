@@ -16,6 +16,21 @@ M.setup = function(config)
     print(prefix .. message)
   end
 
+  if os.getenv('TMUX') ~= nil then
+    return nil
+  end
+
+  for _, arg in ipairs(vim.v.argv) do
+    for _, disabling_arg in ipairs({
+      '--remote-ui',
+      '--listen',
+    }) do
+      if arg == disabling_arg then
+        return nil
+      end
+    end
+  end
+
   local loaded_libxcb, xcb = pcall(ffi.load, 'xcb')
   if not loaded_libxcb then
     msg('failed to load xcb')
