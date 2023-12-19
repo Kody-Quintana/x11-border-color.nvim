@@ -12,8 +12,9 @@ Requires: <sup><sub>(You probably already have these installed)</sub></sup>
   * `xcb-utils`
 
 
-
-![preview](https://github.com/Kody-Quintana/x11-border-color.nvim/assets/35752790/803d37c8-1fe8-461b-b720-94eeb33d0a51)
+<p align="center" width="100%">
+ <img src=https://github.com/Kody-Quintana/x11-border-color.nvim/assets/35752790/803d37c8-1fe8-461b-b720-94eeb33d0a51 />
+</p>
 
 ## Install
 ```lua
