@@ -159,7 +159,7 @@ M.setup = function(config)
         if in_focus then
           set_color_auto()
         end
-      end, 1000)
+      end, 300)
     end
   })
 
