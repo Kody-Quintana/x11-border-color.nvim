@@ -49,7 +49,7 @@ M.setup = function(config)
     -- we want to set color back to whatever the bspwm focused border color is
     local bspwm_focused_border_color = vim.fn.system({'bspc', 'config', 'focused_border_color'})
     if vim.v.shell_error == 0 then
-        config.restore_color = bspwm_focused_border_color
+      config.restore_color = bspwm_focused_border_color
 
     -- TODO grab the current border color before nvim opens?
     else
@@ -138,13 +138,34 @@ M.setup = function(config)
     end
   })
 
-  vim.api.nvim_create_autocmd({'FocusGained', 'VimEnter'}, {
+  local in_focus = false
+
+  local function set_color_auto()
+    if vim.api.nvim_get_mode().mode == 'i' then
+      set_border_color(config.insert_color)
+    else
+      set_border_color(config.normal_color)
+    end
+  end
+
+  vim.api.nvim_create_autocmd({"FocusGained", "VimEnter"}, {
     callback = function()
-      if vim.api.nvim_get_mode().mode == 'i' then
-        set_border_color(config.insert_color)
-      else
-        set_border_color(config.normal_color)
-      end
+      set_color_auto()
+
+      -- switching desktops races and bspwm sets the active border after
+      -- we set it inside here so this should help prevent that.
+      in_focus = true
+      vim.defer_fn(function()
+        if in_focus then
+          set_color_auto()
+        end
+      end, 1000)
+    end
+  })
+
+  vim.api.nvim_create_autocmd("FocusLost", {
+    callback = function()
+      in_focus = false
     end
   })
 
