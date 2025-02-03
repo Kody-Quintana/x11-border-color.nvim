@@ -171,6 +171,7 @@ M.setup = function(config)
 
   vim.api.nvim_create_autocmd('VimLeave', {
     callback = function()
+      in_focus = false
       set_border_color(config.restore_color)
     end
   })
